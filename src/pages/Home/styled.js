@@ -82,6 +82,12 @@ export const CarouselTitle = styled.p`
     font-size: 1.3rem;
     font-weight: bold;
     line-height: 1rem;
+    margin-bottom: 20px;
+`
+
+export const CarouselImg = styled.img`
+    width: 120px;
+    max-height: 80px;
 `
 
 export const MapContainer = styled.section`
