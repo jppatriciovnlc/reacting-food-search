@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import Portal from './Portal';
 import * as S from './styled';
@@ -8,7 +8,7 @@ export default function Modal ({children, open, onClose}) {
     
     useEffect(() => {
         const onEsc = (e) => {
-            if(e.keycode == 27) onClose();
+            if(e.keycode === 27) onClose();
         }
         window.addEventListener('keydown', onEsc);
 

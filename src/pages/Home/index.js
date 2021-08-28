@@ -5,10 +5,9 @@ import { IconButton } from '@material-ui/core';
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
 import logo from '../../assets/restaurant-1724294_1280.png';
 import image1 from '../../assets/barbecue-1239434_1920.jpg';
-import image2 from '../../assets/mediterranean-cuisine-2378758_1920.jpg';
-import image3 from '../../assets/red-wine-2443699_1920.jpg';
 
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import Carousel, {  autoplayPlugin, slidesToShowPlugin } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
@@ -16,8 +15,10 @@ import '@brainhubeu/react-carousel/lib/style.css';
 export default function Home(props) {
 
     const [ searchValue, setSearchValue ] = useState('');
-    const [ modalOpened, setModalOpened ] = useState(true);
+    const [ modalOpened, setModalOpened ] = useState(false);
     const [ query, setQuery]  = useState(null);
+    const [ placeId, setplaceId]  = useState(null);
+    const { restaurants, restaurantSelected } = useSelector((state) => state.restaurants)
 
     const inputProps = {
         step: 300,
@@ -25,10 +26,19 @@ export default function Home(props) {
         placeholder: "search",
     };
 
+    const handleOpenModal = (placeId) => {
+        setplaceId(placeId);
+        setModalOpened(true);
+    }
+
     const handleKeyPressed = (e) => {
-        if(e.key == 'Enter') {
+        if(e.key === 'Enter') {
             setQuery(searchValue);
         }
+    }
+
+    const searchButtonPressed = (e) => {        
+        setQuery(searchValue);       
     }
 
     return(
@@ -52,7 +62,7 @@ export default function Home(props) {
                             color="primary" 
                             aria-label="search" 
                             component="span"
-                            onClick={handleKeyPressed}>
+                            onClick={searchButtonPressed}>
                             <SearchOutlinedIcon />
                         </IconButton>
                     </S.SearchContainer>   
@@ -75,19 +85,34 @@ export default function Home(props) {
                                 },
                             },
                         ]} 
-                        animationSpeed={1000}              >
-                        <S.CarouselImg src={image1} alt="carousel 1"/>
-                        <S.CarouselImg src={image2} alt="carousel 2"/>
-                        <S.CarouselImg src={image3} alt="carousel 3"/>
+                        animationSpeed={1000} 
+                    >
+                        {restaurants.map((restaurant) => (
+                            <S.CarouselImg 
+                                src={restaurant.photos? restaurant.photos[0].getUrl(): image1} 
+                                alt="carousel " {...restaurant.place_id}
+                                key={restaurant.place_id}
+                            />
+                        ))}                        
                     </Carousel>                    
                 </S.CarouselContainer>
-                <RestaurantCard/>
+                {restaurants.map((restaurant) => 
+                    <RestaurantCard 
+                        restaurant={restaurant} 
+                        key={restaurant.place_id}
+                        onClick={()=> handleOpenModal(restaurant.place_id)}
+                    />)
+                }                
 
             </S.Container>
             <S.MapContainer>
-                        <Map query={query}/>
+                        <Map query={query}  placeId={placeId}/>
             </S.MapContainer>
-            <Modal open={modalOpened} onClose={() => setModalOpened(!modalOpened)} />
+            <Modal open={modalOpened} onClose={() => setModalOpened(!modalOpened)}>
+                <p>{restaurantSelected?.name}</p>
+                <p>{restaurantSelected?.formatted_phone_number}</p>
+                <p>{restaurantSelected?.formatted_address}</p>
+            </Modal>
         </S.Wraper>
         
     )
