@@ -1,6 +1,6 @@
 import React from 'react';
 import * as S from './styled';
-import { RestaurantCard, Modal, Map } from '../../components';
+import { RestaurantCard, Modal, Map, Loader, Skeleton } from '../../components';
 import { IconButton } from '@material-ui/core';
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
 import logo from '../../assets/restaurant-1724294_1280.png';
@@ -69,32 +69,36 @@ export default function Home(props) {
                 </S.Search>
                 <S.CarouselContainer>
                     <S.CarouselTitle>Na sua Área</S.CarouselTitle>
-                    <Carousel
-                        plugins={[
-                            'infinite',
-                            {
-                                resolve: slidesToShowPlugin,
-                                options: {
-                                 numberOfSlides: 2
-                                }
-                            },
-                            {
-                                resolve: autoplayPlugin,
-                                options: {                                    
-                                    interval: 2000
-                                },
-                            },
-                        ]} 
-                        animationSpeed={1000} 
-                    >
-                        {restaurants.map((restaurant) => (
-                            <S.CarouselImg 
-                                src={restaurant.photos? restaurant.photos[0].getUrl(): image1} 
-                                alt="carousel " {...restaurant.place_id}
-                                key={restaurant.place_id}
-                            />
-                        ))}                        
-                    </Carousel>                    
+                    {restaurants.length > 0 ? (
+                            <Carousel
+                                plugins={[
+                                    'infinite',
+                                    {
+                                        resolve: slidesToShowPlugin,
+                                        options: {
+                                        numberOfSlides: 2
+                                        }
+                                    },
+                                    {
+                                        resolve: autoplayPlugin,
+                                        options: {                                    
+                                            interval: 2000
+                                        },
+                                    },
+                                ]} 
+                                animationSpeed={1000} 
+                            >
+                                {restaurants.map((restaurant) => (
+                                    <S.CarouselImg 
+                                        src={restaurant.photos? restaurant.photos[0].getUrl(): image1} 
+                                        alt="carousel " {...restaurant.place_id}
+                                        key={restaurant.place_id}
+                                    />
+                                ))}                        
+                            </Carousel>
+                        ): <Loader />
+                    }
+                                        
                 </S.CarouselContainer>
                 {restaurants.map((restaurant) => 
                     <RestaurantCard 
@@ -109,9 +113,20 @@ export default function Home(props) {
                         <Map query={query}  placeId={placeId}/>
             </S.MapContainer>
             <Modal open={modalOpened} onClose={() => setModalOpened(!modalOpened)}>
-                <p>{restaurantSelected?.name}</p>
-                <p>{restaurantSelected?.formatted_phone_number}</p>
-                <p>{restaurantSelected?.formatted_address}</p>
+                {restaurantSelected ? (
+                    <>
+                        <p>{restaurantSelected?.name}</p>
+                        <p>{restaurantSelected?.formatted_phone_number}</p>
+                        <p>{restaurantSelected?.formatted_address}</p>
+                    </>
+                ): (
+                    <>
+                        <Skeleton width="10px" height="10px" />
+                        <Skeleton width="10px" height="10px" />
+                        <Skeleton width="10px" height="10px" />
+                    </>
+                )}
+                
             </Modal>
         </S.Wraper>
         

@@ -11,7 +11,7 @@ export const Restaurant = styled.div`
 
     &:hover {
         background-color: ${(props) => props.theme.colors.background};
-        border-left: 5px solid red;
+        border-left: 5px solid #99090d;
     }
 
 
@@ -25,7 +25,7 @@ export const RestaurantInfo = styled.div`
 export const Title = styled.span`
     font-family: ${(props) => props.theme.fonts.regular};
     color: ${(props) => props.theme.colors.text};
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     font-weight: bold;
     line-height: 1.5rem;
     margin-bottom: 10px;
@@ -34,12 +34,13 @@ export const Title = styled.span`
 export const Address = styled.span`
     font-family: ${(props) => props.theme.fonts.regular};
     color: ${(props) => props.theme.colors.text};
-    font-size: 1rem;
+    font-size: 0.8rem;
     line-height: 1.2rem;
     margin-bottom: 10px;
 `
 
 export const Photo = styled.img`
+    display: ${(props) => (props.imageLoaded ? 'block' : 'none')};
     width: 100px;
     height: 100px;
     border-radius: 5px;
